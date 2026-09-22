@@ -1,0 +1,1140 @@
+/* ==========================================================================
+   WhatsApp 360° Vision — tema.css
+   Sistema de design da central de monitoramento da rede Apaixonados Por
+   Quatro Patas. Software da Daco Vet.
+
+   Este arquivo é o ÚNICO dono dos tokens e dos componentes compartilhados.
+   Os módulos de tela (vg-, wa-, an-, ld-, cf-) USAM estas classes e nunca as
+   redefinem — ver seção 6 do CONTRATO.md.
+
+   Ordem:
+     1. Fontes
+     2. Tokens (:root)
+     3. Reset e base
+     4. Componentes compartilhados
+     5. Utilitários de layout
+     6. Animações nomeadas
+     7. Responsivo (1180px e 720px)
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------
+   1. FONTES
+   Sora   → títulos e números
+   Manrope→ texto corrido
+   Outfit → marca (peso 800)
+   Se o Google Fonts não carregar, a pilha cai em system-ui sem quebrar nada.
+   ----------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@800&family=Sora:wght@400;500;600;700;800&display=swap');
+
+/* -----------------------------------------------------------------------
+   2. TOKENS
+   Os nomes das cores e dos raios vêm da seção 4 do contrato e não mudam.
+   O resto (sombra, espaçamento, z-index, duração, tipografia) completa o
+   sistema mantendo o mesmo idioma.
+   ----------------------------------------------------------------------- */
+:root {
+  /* --- Superfícies --- */
+  --fundo:          #070A12;   /* fundo da aplicação */
+  --fundo-2:        #0B0F1A;   /* trilhos e barras */
+  --carta:          #10151F;   /* card */
+  --carta-2:        #161C28;   /* card elevado / hover */
+  --linha:          #202838;   /* divisória */
+  --linha-2:        #2B3547;
+
+  /* --- Tinta ---
+     tinta   → texto principal
+     tinta-2 → texto secundário (8.3:1 sobre a carta, seguro em qualquer tamanho)
+     tinta-3 → legenda; tem 4.1:1 sobre a carta, então SÓ em texto grande,
+               ícone, item desabilitado ou traço de "não medimos". Texto
+               pequeno de leitura usa sempre --tinta-2. */
+  --tinta:          #EEF2F8;
+  --tinta-2:        #A4AFC2;
+  --tinta-3:        #6B7689;
+
+  /* --- Ação --- */
+  --indigo:         #5B5BD6;
+  --indigo-cl:      #7B7BEA;
+  --indigo-sombra:  rgba(91, 91, 214, .35);
+
+  /* --- Marca Apaixonados (uso com parcimônia) --- */
+  --verde:          #8CC63F;
+  --vermelho:       #E3262B;
+
+  /* --- Ranking --- */
+  --ouro:           #FFC93C;
+  --prata:          #C9D2E0;
+  --bronze:         #E08A4B;
+
+  /* --- Estado --- */
+  --ok:             #35D07F;
+  --atencao:        #FFC93C;
+  --risco:          #FF5A5A;
+
+  /* --- Assinatura Daco --- */
+  --daco-verde:     #A8F03C;
+  --daco-laranja:   #FF5A1F;
+
+  /* --- Raios --- */
+  --r:              18px;      /* raio padrão */
+  --r-p:            12px;      /* raio pequeno (botão, campo, selo quadrado) */
+  --r-redondo:      999px;
+
+  /* --- Véus de cor (fundo translúcido dos selos e avisos) ---
+     Valores fixos em rgba de propósito: color-mix() ainda não é universal. */
+  --veu-ok:         rgba(53, 208, 127, .14);
+  --veu-atencao:    rgba(255, 201, 60, .14);
+  --veu-risco:      rgba(255, 90, 90, .14);
+  --veu-neutro:     rgba(164, 175, 194, .10);
+  --veu-indigo:     rgba(91, 91, 214, .16);
+  --veu-ouro:       rgba(255, 201, 60, .12);
+
+  /* --- Sombras --- */
+  --sombra-1:       0 1px 2px rgba(0, 0, 0, .34);
+  --sombra-2:       0 6px 18px rgba(0, 0, 0, .38);
+  --sombra-3:       0 18px 44px rgba(0, 0, 0, .48);
+  --sombra-indigo:  0 8px 24px var(--indigo-sombra);
+  --sombra-ouro:    0 0 0 1px rgba(255, 201, 60, .34), 0 8px 26px rgba(255, 201, 60, .16);
+  --anel-foco:      0 0 0 3px var(--indigo-sombra);
+
+  /* --- Espaçamento (escala 4/8/12/16/24/32) --- */
+  --esp-4:          4px;
+  --esp-8:          8px;
+  --esp-12:         12px;
+  --esp-16:         16px;
+  --esp-24:         24px;
+  --esp-32:         32px;
+
+  /* --- Medidas de interface --- */
+  --alvo-toque:     44px;      /* mínimo de toque, vale em qualquer largura */
+  --trilho-largura: 248px;     /* navegação lateral em telas largas */
+  --trilho-altura:  68px;      /* barra inferior abaixo de 1180px */
+  --carta-padding:  20px;
+
+  /* --- z-index --- */
+  --z-fundo:        0;
+  --z-carta:        1;
+  --z-flutuante:    10;        /* menu suspenso, dica de valor */
+  --z-trilho:       100;
+  --z-cabecalho:    200;
+  --z-sobreposto:   300;       /* painel lateral, diálogo */
+  --z-aviso:        400;       /* faixa de erro de sessão/conexão */
+  --z-dica:         500;
+
+  /* --- Tempo e curva --- */
+  --curva:          cubic-bezier(.22, .61, .36, 1);
+  --curva-saida:    cubic-bezier(.4, 0, 1, 1);
+  --t-rapida:       120ms;
+  --t-padrao:       180ms;     /* transição padrão do contrato */
+  --t-tela:         260ms;     /* troca de tela, teto do contrato */
+  --t-numero:       600ms;     /* número que conta até o valor */
+  --t-pulso:        2200ms;    /* bolinha de "ativo" */
+  --t-shimmer:      1400ms;
+  --transicao:      var(--t-padrao) var(--curva);
+
+  /* --- Tipografia --- */
+  --fonte-titulo:   'Sora', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fonte-texto:    'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fonte-marca:    'Outfit', 'Sora', system-ui, sans-serif;
+  --fonte-mono:     ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+
+  /* Tipografia fluida: cresce com a tela e para de crescer no limite. */
+  --txt-legenda:    clamp(10.5px, .16vw + 10px, 12px);
+  --txt-pequeno:    clamp(12px,   .20vw + 11.6px, 13.5px);
+  --txt-base:       clamp(13.5px, .26vw + 12.8px, 15.5px);
+  --txt-medio:      clamp(15.5px, .40vw + 14.4px, 18px);
+  --txt-titulo:     clamp(18px,   1.00vw + 15px, 24px);
+  --txt-numero-p:   clamp(19px,   1.10vw + 15.6px, 26px);
+  --txt-numero:     clamp(25px,   2.10vw + 18px, 40px);
+
+  color-scheme: dark;
+}
+
+/* -----------------------------------------------------------------------
+   3. RESET E BASE
+   ----------------------------------------------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--fundo);
+  color: var(--tinta);
+  font-family: var(--fonte-texto);
+  font-size: var(--txt-base);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: .005em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Nenhuma largura pode gerar rolagem horizontal. `clip` não cria contexto
+     de rolagem, então não quebra position: sticky dentro das telas. */
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.015em;
+  color: var(--tinta);
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--txt-titulo); }
+h2 { font-size: var(--txt-medio); }
+h3 { font-size: var(--txt-base); font-weight: 600; }
+
+p { text-wrap: pretty; }
+
+a {
+  color: var(--indigo-cl);
+  text-decoration-color: rgba(123, 123, 234, .4);
+  text-underline-offset: 3px;
+  transition: color var(--transicao), text-decoration-color var(--transicao);
+}
+a:hover { color: var(--tinta); text-decoration-color: currentColor; }
+
+img, svg, video { display: block; max-width: 100%; }
+svg { flex: none; }
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* A marca da rede e a assinatura da Daco usam Outfit 800. */
+.marca {
+  font-family: var(--fonte-marca);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1;
+}
+
+/* Números tabulares: coluna de métrica não "dança" quando o valor muda. */
+.numero {
+  font-family: var(--fonte-titulo);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* Foco sempre visível — nunca remover sem colocar outro indicador. */
+:focus-visible {
+  outline: 2px solid var(--indigo-cl);
+  outline-offset: 2px;
+  border-radius: var(--r-p);
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* Seleção de texto com o indigo de ação. */
+::selection {
+  background: rgba(91, 91, 214, .45);
+  color: #FFF;
+}
+
+/* Barra de rolagem fina, indigo, discreta. */
+* { scrollbar-width: thin; scrollbar-color: var(--linha-2) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--linha-2);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: var(--r-redondo);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--indigo); background-clip: content-box; }
+::-webkit-scrollbar-corner { background: transparent; }
+
+/* -----------------------------------------------------------------------
+   4. COMPONENTES COMPARTILHADOS
+   ----------------------------------------------------------------------- */
+
+/* .carta — cartão base: azul-marinho profundo, borda de 1px, cantos de 18px.
+   .carta-alta — versão elevada (destaque, hover, item selecionado). */
+.carta {
+  position: relative;
+  z-index: var(--z-carta);
+  background: var(--carta);
+  border: 1px solid var(--linha);
+  border-radius: var(--r);
+  padding: var(--carta-padding);
+  box-shadow: var(--sombra-1);
+  transition: background var(--transicao),
+              border-color var(--transicao),
+              box-shadow var(--transicao),
+              transform var(--transicao);
+}
+
+.carta-alta {
+  background: var(--carta-2);
+  border-color: var(--linha-2);
+  box-shadow: var(--sombra-2);
+}
+
+/* Cartão clicável: só quem tem [data-clicavel] reage ao mouse. */
+.carta[data-clicavel]:hover,
+.carta[data-clicavel]:focus-visible {
+  background: var(--carta-2);
+  border-color: var(--linha-2);
+  box-shadow: var(--sombra-2);
+}
+.carta[data-clicavel] { cursor: pointer; }
+.carta[data-clicavel]:active { transform: translateY(1px); }
+
+/* Faixa de status no topo do cartão (unidade em risco, lead novo, etc.). */
+.carta[data-faixa]::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  border-radius: var(--r) var(--r) 0 0;
+  background: var(--linha-2);
+}
+.carta[data-faixa='ok']::before      { background: var(--ok); }
+.carta[data-faixa='atencao']::before { background: var(--atencao); }
+.carta[data-faixa='risco']::before   { background: var(--risco); }
+.carta[data-faixa='indigo']::before  { background: var(--indigo); }
+
+/* --- Botões ---------------------------------------------------------- */
+
+/* .btn — base neutra. Altura mínima de 44px em qualquer largura. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-8);
+  min-height: var(--alvo-toque);
+  padding: 0 var(--esp-16);
+  background: var(--carta-2);
+  color: var(--tinta);
+  border: 1px solid var(--linha-2);
+  border-radius: var(--r-p);
+  font-family: var(--fonte-texto);
+  font-size: var(--txt-pequeno);
+  font-weight: 700;
+  letter-spacing: .01em;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--transicao),
+              border-color var(--transicao),
+              box-shadow var(--transicao),
+              color var(--transicao),
+              transform var(--t-rapida) var(--curva);
+}
+.btn svg { width: 18px; height: 18px; }
+.btn:hover { background: var(--linha); border-color: var(--linha-2); }
+.btn:active { transform: translateY(1px) scale(.99); }
+.btn:focus-visible { outline: 2px solid var(--indigo-cl); outline-offset: 2px; }
+.btn[disabled],
+.btn[aria-disabled='true'] {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* .btn-primario — ação principal da tela. Só um por bloco. */
+.btn-primario {
+  background: var(--indigo);
+  border-color: var(--indigo);
+  color: #FFF;
+  box-shadow: var(--sombra-indigo);
+}
+.btn-primario:hover { background: var(--indigo-cl); border-color: var(--indigo-cl); }
+.btn-primario:active { box-shadow: 0 2px 8px var(--indigo-sombra); }
+
+/* .btn-fantasma — ação secundária, sem peso visual. */
+.btn-fantasma {
+  background: transparent;
+  border-color: transparent;
+  color: var(--tinta-2);
+}
+.btn-fantasma:hover { background: var(--carta-2); border-color: var(--linha); color: var(--tinta); }
+
+/* .btn-perigo — ação destrutiva (sair, apagar preferência). */
+.btn-perigo {
+  background: var(--veu-risco);
+  border-color: rgba(255, 90, 90, .38);
+  color: var(--risco);
+}
+.btn-perigo:hover { background: rgba(255, 90, 90, .22); border-color: var(--risco); color: #FFE2E2; }
+
+/* .btn-icone — botão quadrado só com ícone. EXIGE aria-label em português. */
+.btn-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--alvo-toque);
+  height: var(--alvo-toque);
+  padding: 0;
+  background: transparent;
+  color: var(--tinta-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-p);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--transicao), color var(--transicao),
+              border-color var(--transicao), transform var(--t-rapida) var(--curva);
+}
+.btn-icone svg { width: 20px; height: 20px; }
+.btn-icone:hover { background: var(--carta-2); border-color: var(--linha); color: var(--tinta); }
+.btn-icone:active { transform: scale(.94); }
+.btn-icone:focus-visible { outline: 2px solid var(--indigo-cl); outline-offset: 2px; }
+.btn-icone[aria-pressed='true'] {
+  background: var(--veu-indigo);
+  border-color: var(--indigo);
+  color: var(--indigo-cl);
+}
+.btn-icone[disabled] { opacity: .45; cursor: not-allowed; }
+
+/* --- Campo de formulário ---------------------------------------------
+   Rótulo DENTRO da caixa, acima do valor (estilo do mockup):
+
+   <label class="campo">
+     <span class="campo-rotulo">E-mail</span>
+     <input type="email" autocomplete="username">
+     <span class="campo-erro">Informe um e-mail válido</span>
+   </label>
+
+   O erro só aparece com a classe .tem-erro no .campo.
+   O anel de foco fica na caixa (:focus-within), por isso o input interno
+   pode ficar sem outline própria — o indicador continua visível.
+   -------------------------------------------------------------------- */
+.campo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 62px;
+  padding: 9px var(--esp-16) 11px;
+  background: var(--carta-2);
+  border: 1px solid var(--linha);
+  border-radius: var(--r-p);
+  cursor: text;
+  transition: border-color var(--transicao), box-shadow var(--transicao), background var(--transicao);
+}
+.campo:hover { border-color: var(--linha-2); }
+.campo:focus-within {
+  border-color: var(--indigo);
+  box-shadow: var(--anel-foco);
+  background: var(--carta);
+}
+
+.campo-rotulo {
+  font-size: var(--txt-legenda);
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+  transition: color var(--transicao);
+}
+.campo:focus-within .campo-rotulo { color: var(--indigo-cl); }
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  min-height: 24px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--tinta);
+  font-family: var(--fonte-texto);
+  font-size: var(--txt-base);
+  font-weight: 600;
+}
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus { outline: none; }
+.campo textarea { resize: vertical; line-height: 1.5; }
+.campo input::placeholder,
+.campo textarea::placeholder { color: var(--tinta-3); font-weight: 500; }
+
+/* O autopreenchimento do navegador não pode pintar a caixa de branco. */
+.campo input:-webkit-autofill,
+.campo input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--tinta);
+  -webkit-box-shadow: 0 0 0 40px var(--carta-2) inset;
+  caret-color: var(--tinta);
+}
+
+/* .campo-erro — mensagem em português abaixo do valor. */
+.campo-erro {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: var(--txt-pequeno);
+  font-weight: 600;
+  color: var(--risco);
+}
+.campo.tem-erro { border-color: var(--risco); }
+.campo.tem-erro:focus-within { box-shadow: 0 0 0 3px rgba(255, 90, 90, .28); }
+.campo.tem-erro .campo-rotulo { color: var(--risco); }
+.campo.tem-erro .campo-erro { display: flex; }
+.campo.tem-erro .campo-erro::before { content: '✕'; font-size: 10px; }
+
+/* --- Selos (pílulas de status) ---------------------------------------
+   .selo-ok / .selo-atencao / .selo-risco / .selo-neutro.
+   O ponto colorido à esquerda dá o estado mesmo para quem não distingue
+   as cores — o texto também é obrigatório. */
+.selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--r-redondo);
+  background: var(--veu-neutro);
+  border: 1px solid transparent;
+  color: var(--tinta-2);
+  font-size: var(--txt-legenda);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1.6;
+}
+.selo::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.selo-ok      { background: var(--veu-ok);      border-color: rgba(53, 208, 127, .30); color: var(--ok); }
+.selo-atencao { background: var(--veu-atencao); border-color: rgba(255, 201, 60, .30); color: var(--atencao); }
+.selo-risco   { background: var(--veu-risco);   border-color: rgba(255, 90, 90, .30);  color: var(--risco); }
+.selo-neutro  { background: var(--veu-neutro);  border-color: var(--linha);            color: var(--tinta-2); }
+/* Selo sem ponto, para rótulo puro (ex.: "IA respondendo"). */
+.selo.sem-ponto::before { display: none; }
+
+/* .ponto-vivo — bolinha verde de "captura ligada / unidade ativa".
+   Sem movimento ela continua legível; o pulso é só reforço. */
+.ponto-vivo {
+  position: relative;
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 3px rgba(53, 208, 127, .18);
+}
+.ponto-vivo::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid var(--ok);
+  opacity: 0;
+}
+/* Variantes para os outros estados da mesma bolinha. */
+.ponto-vivo[data-estado='parado'] { background: var(--tinta-3); box-shadow: none; }
+.ponto-vivo[data-estado='risco']  { background: var(--risco); box-shadow: 0 0 0 3px rgba(255, 90, 90, .18); }
+
+/* --- Medalhas do ranking --------------------------------------------- */
+.medalha {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--carta-2);
+  border: 1px solid var(--linha-2);
+  color: var(--tinta-2);
+  font-family: var(--fonte-titulo);
+  font-size: var(--txt-pequeno);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.medalha-1 {
+  background: linear-gradient(145deg, #FFD96B, var(--ouro) 55%, #D9A417);
+  border-color: rgba(255, 201, 60, .55);
+  color: #2A1D00;
+  box-shadow: var(--sombra-ouro);
+}
+.medalha-2 {
+  background: linear-gradient(145deg, #E8EEF8, var(--prata) 55%, #98A3B5);
+  border-color: rgba(201, 210, 224, .5);
+  color: #1B2029;
+}
+.medalha-3 {
+  background: linear-gradient(145deg, #F0B07C, var(--bronze) 55%, #B0653A);
+  border-color: rgba(224, 138, 75, .5);
+  color: #2A1608;
+}
+
+/* --- Métrica ---------------------------------------------------------
+   <div class="metrica">
+     <span class="metrica-valor numero">4,0</span>
+     <span class="metrica-rotulo">Mediana de resposta (min)</span>
+   </div>
+
+   null NÃO é zero. Quando a API devolveu null, a linha recebe .sem-medida:
+   o valor vira um traço e o title explica em português por que não há
+   medida. Zero medido continua sendo o algarismo 0. */
+.metrica {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.metrica-valor {
+  font-family: var(--fonte-titulo);
+  font-size: var(--txt-numero);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -.03em;
+  color: var(--tinta);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+.metrica-valor .unidade {
+  font-size: .42em;
+  font-weight: 600;
+  color: var(--tinta-2);
+  letter-spacing: 0;
+  margin-left: 3px;
+}
+.metrica-rotulo {
+  font-size: var(--txt-legenda);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+/* Métrica compacta, para dentro de uma lista ou de um cartão de unidade. */
+.metrica.compacta .metrica-valor { font-size: var(--txt-numero-p); }
+
+/* "Não medimos" — traço em tinta-3, tamanho grande (contraste seguro). */
+.metrica.sem-medida .metrica-valor { color: var(--tinta-3); font-weight: 700; }
+.metrica.sem-medida .metrica-rotulo { color: var(--tinta-3); }
+.metrica-valor[data-vazio]::after { content: '—'; }
+
+/* Cor de leitura do valor conforme a meta (usar só quando há meta oficial). */
+.metrica[data-tom='ok'] .metrica-valor      { color: var(--ok); }
+.metrica[data-tom='atencao'] .metrica-valor { color: var(--atencao); }
+.metrica[data-tom='risco'] .metrica-valor   { color: var(--risco); }
+.metrica[data-tom='ouro'] .metrica-valor    { color: var(--ouro); }
+
+/* --- Barra de progresso / meta ---------------------------------------
+   <div class="barra" role="img" aria-label="63% até 5 minutos">
+     <span class="barra-preenchida" style="width:63%"></span>
+   </div>
+   A largura vem do JS com o número real. Sem dado, use .sem-medida: a
+   barra fica listrada e não finge um valor. */
+.barra {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  background: var(--fundo-2);
+  border: 1px solid var(--linha);
+  border-radius: var(--r-redondo);
+  overflow: hidden;
+}
+.barra-preenchida {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: var(--r-redondo);
+  background: linear-gradient(90deg, var(--indigo), var(--indigo-cl));
+  transition: width var(--t-numero) var(--curva), background var(--transicao);
+}
+.barra-preenchida[data-tom='ok']      { background: linear-gradient(90deg, #21A661, var(--ok)); }
+.barra-preenchida[data-tom='atencao'] { background: linear-gradient(90deg, #D9A417, var(--atencao)); }
+.barra-preenchida[data-tom='risco']   { background: linear-gradient(90deg, #C93636, var(--risco)); }
+.barra-preenchida[data-tom='ouro']    { background: linear-gradient(90deg, #D9A417, var(--ouro)); }
+/* Traço da meta oficial do treinamento (ex.: 90% de CTA claro). */
+.barra[data-meta]::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: var(--meta, 90%);
+  width: 2px;
+  background: var(--tinta-2);
+  opacity: .55;
+}
+.barra.sem-medida {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--fundo-2) 0 5px,
+    var(--carta-2) 5px 10px
+  );
+}
+.barra.sem-medida .barra-preenchida { display: none; }
+.barra.alta { height: 12px; }
+
+/* --- Estado vazio ----------------------------------------------------
+   O componente mais importante da plataforma: quando o dado não veio,
+   a tela explica em português o que falta e o que fazer. Nunca inventar
+   número para preencher espaço.
+
+   <div class="vazio">
+     <svg class="vazio-icone" …></svg>
+     <p class="vazio-titulo">Sem captura de grupo nesta unidade</p>
+     <p class="vazio-texto">A contagem de leads depende do grupo…</p>
+     <button class="btn btn-primario">Ligar a captura</button>
+   </div> */
+.vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-8);
+  padding: var(--esp-32) var(--esp-24);
+  min-height: 180px;
+  text-align: center;
+  background: var(--carta);
+  border: 1px dashed var(--linha-2);
+  border-radius: var(--r);
+  color: var(--tinta-2);
+}
+.vazio-icone {
+  width: 40px;
+  height: 40px;
+  color: var(--tinta-3);
+  opacity: .9;
+  margin-bottom: var(--esp-4);
+}
+.vazio-titulo {
+  font-family: var(--fonte-titulo);
+  font-size: var(--txt-medio);
+  font-weight: 700;
+  color: var(--tinta);
+  letter-spacing: -.01em;
+}
+.vazio-texto {
+  max-width: 46ch;
+  font-size: var(--txt-pequeno);
+  font-weight: 500;
+  color: var(--tinta-2);
+  line-height: 1.6;
+}
+.vazio .btn { margin-top: var(--esp-8); }
+/* Dentro de um cartão que já tem borda, o vazio vira só o miolo. */
+.carta > .vazio { border: 0; background: transparent; padding: var(--esp-24) 0; min-height: 0; }
+
+/* --- Esqueleto de carregamento --------------------------------------
+   Placa cinza no lugar do conteúdo enquanto a API responde. NÃO é dado:
+   nunca deixar esqueleto no lugar de um valor que já falhou — aí entra
+   .vazio ou .aviso-erro. */
+.esqueleto {
+  position: relative;
+  overflow: hidden;
+  background: var(--carta-2);
+  border-radius: var(--r-p);
+  min-height: 14px;
+  color: transparent;
+  user-select: none;
+}
+.esqueleto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(238, 242, 248, .07) 45%,
+    rgba(238, 242, 248, .12) 55%,
+    transparent
+  );
+}
+.esqueleto.linha  { height: 14px; border-radius: var(--r-redondo); }
+.esqueleto.titulo { height: 24px; width: 55%; border-radius: var(--r-redondo); }
+.esqueleto.bloco  { height: 120px; border-radius: var(--r); }
+.esqueleto.circulo{ width: 40px; height: 40px; border-radius: 50%; }
+
+/* --- Avisos ----------------------------------------------------------
+   Faixa de mensagem: conexão caída, sessão expirada, captura desligada.
+   .aviso        → informativo (indigo)
+   .aviso-erro   → falha que impede a leitura do dado
+   .aviso-atencao→ dado parcial
+   .aviso-ok     → confirmação */
+.aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--esp-12);
+  padding: var(--esp-12) var(--esp-16);
+  background: var(--veu-indigo);
+  border: 1px solid rgba(91, 91, 214, .34);
+  border-left-width: 3px;
+  border-radius: var(--r-p);
+  color: var(--tinta);
+  font-size: var(--txt-pequeno);
+  font-weight: 600;
+  line-height: 1.55;
+}
+.aviso svg { width: 18px; height: 18px; margin-top: 1px; color: var(--indigo-cl); }
+.aviso .aviso-titulo {
+  display: block;
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.aviso .aviso-texto { color: var(--tinta-2); font-weight: 500; }
+.aviso .btn { margin-left: auto; align-self: center; }
+
+.aviso-erro {
+  background: var(--veu-risco);
+  border-color: rgba(255, 90, 90, .40);
+}
+.aviso-erro svg { color: var(--risco); }
+.aviso-erro .aviso-titulo { color: var(--risco); }
+
+.aviso-atencao {
+  background: var(--veu-atencao);
+  border-color: rgba(255, 201, 60, .38);
+}
+.aviso-atencao svg,
+.aviso-atencao .aviso-titulo { color: var(--atencao); }
+
+.aviso-ok {
+  background: var(--veu-ok);
+  border-color: rgba(53, 208, 127, .34);
+}
+.aviso-ok svg,
+.aviso-ok .aviso-titulo { color: var(--ok); }
+
+/* .rolagem-fina — container rolável com a barra discreta e sem
+   estouro horizontal (lista de conversas, trechos da análise). */
+.rolagem-fina {
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--linha-2) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.rolagem-fina::-webkit-scrollbar { width: 8px; }
+.rolagem-fina::-webkit-scrollbar-thumb {
+  background: var(--linha-2);
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: var(--r-redondo);
+}
+.rolagem-fina:hover::-webkit-scrollbar-thumb { background: var(--indigo); background-clip: content-box; }
+
+/* .sr-apenas — some da tela, continua no leitor de tela.
+   Usar no rótulo de qualquer controle cujo texto visível seja só ícone. */
+.sr-apenas {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+/* Pular para o conteúdo: escondido até receber foco pelo teclado. */
+.sr-apenas.foco-mostra:focus {
+  position: fixed !important;
+  top: var(--esp-12);
+  left: var(--esp-12);
+  z-index: var(--z-dica);
+  width: auto;
+  height: auto;
+  clip: auto;
+  clip-path: none;
+  padding: var(--esp-8) var(--esp-16);
+  background: var(--indigo);
+  color: #FFF;
+  border-radius: var(--r-p);
+}
+
+/* -----------------------------------------------------------------------
+   5. UTILITÁRIOS DE LAYOUT
+   .espaco-N define o gap e combina com .pilha, .pilha-h e .grade.
+   ----------------------------------------------------------------------- */
+
+/* Coluna. */
+.pilha {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-12);
+  min-width: 0;
+}
+
+/* Linha; quebra sozinha quando não cabe (nunca gera rolagem horizontal). */
+.pilha-h {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--esp-12);
+  min-width: 0;
+}
+.pilha-h.sem-quebra { flex-wrap: nowrap; }
+.pilha-h.topo   { align-items: flex-start; }
+.pilha-h.base   { align-items: flex-end; }
+.pilha-h.entre  { justify-content: space-between; }
+.pilha-h.fim    { justify-content: flex-end; }
+.pilha-h.centro { justify-content: center; }
+.pilha-h > .cresce,
+.pilha > .cresce { flex: 1 1 auto; min-width: 0; }
+
+/* Grade responsiva: a largura mínima da coluna vem de --grade-min. */
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--grade-min, 260px), 1fr));
+  gap: var(--esp-16);
+  min-width: 0;
+}
+.grade > * { min-width: 0; }
+.pilha > *, .pilha-h > * { min-width: 0; }
+
+/* Divisória de 1px. */
+.separador {
+  height: 1px;
+  width: 100%;
+  border: 0;
+  background: var(--linha);
+  flex: none;
+}
+.separador.vertical {
+  width: 1px;
+  height: auto;
+  min-height: 20px;
+  align-self: stretch;
+}
+
+/* Escala de espaçamento. */
+.espaco-4  { gap: var(--esp-4); }
+.espaco-8  { gap: var(--esp-8); }
+.espaco-12 { gap: var(--esp-12); }
+.espaco-16 { gap: var(--esp-16); }
+.espaco-24 { gap: var(--esp-24); }
+.espaco-32 { gap: var(--esp-32); }
+
+/* Auxiliares de texto usados por todos os módulos. */
+.texto-2 { color: var(--tinta-2); }
+.texto-3 { color: var(--tinta-3); }
+.legenda {
+  font-size: var(--txt-legenda);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+.corta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.corta-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mono { font-family: var(--fonte-mono); font-size: .92em; letter-spacing: -.01em; }
+.empurra { margin-left: auto; }
+.oculto { display: none !important; }
+
+/* -----------------------------------------------------------------------
+   6. ANIMAÇÕES NOMEADAS
+   Tudo dentro de prefers-reduced-motion: no-preference — quem pediu menos
+   movimento recebe a mesma interface, parada. Nenhum componente depende
+   de animação para ficar legível.
+
+   entrada-tela  → troca de tela (fade + 12px, 260ms)
+   sobe-suave    → item de lista entrando, com atraso em cascata
+   pulso-vivo    → bolinha de unidade ativa
+   brilho-medalha→ TOP 1 que mudou de posição
+   shimmer       → esqueleto de carregamento
+   conta-numero  → número que acabou de mudar
+   ----------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+
+  @keyframes entrada-tela {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  @keyframes sobe-suave {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  @keyframes pulso-vivo {
+    0%   { opacity: .9; transform: scale(1); }
+    70%  { opacity: 0;  transform: scale(2.2); }
+    100% { opacity: 0;  transform: scale(2.2); }
+  }
+
+  @keyframes brilho-medalha {
+    0%, 100% { box-shadow: var(--sombra-ouro); }
+    50%      { box-shadow: 0 0 0 1px rgba(255, 201, 60, .7), 0 10px 30px rgba(255, 201, 60, .34); }
+  }
+
+  @keyframes shimmer {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
+  }
+
+  @keyframes conta-numero {
+    0%   { transform: translateY(6px); opacity: .35; }
+    60%  { transform: translateY(0);   opacity: 1; }
+    100% { transform: none; }
+  }
+
+  /* Aplicação --------------------------------------------------------- */
+
+  /* A casca põe .entrando na <section> da tela que acabou de montar. */
+  .entrando { animation: entrada-tela var(--t-tela) var(--curva) both; }
+
+  /* Cascata curta em lista: no máximo 8 degraus para não atrasar a leitura. */
+  .subindo { animation: sobe-suave 220ms var(--curva) both; }
+  .subindo:nth-child(1) { animation-delay: 0ms; }
+  .subindo:nth-child(2) { animation-delay: 30ms; }
+  .subindo:nth-child(3) { animation-delay: 60ms; }
+  .subindo:nth-child(4) { animation-delay: 90ms; }
+  .subindo:nth-child(5) { animation-delay: 120ms; }
+  .subindo:nth-child(6) { animation-delay: 150ms; }
+  .subindo:nth-child(7) { animation-delay: 180ms; }
+  .subindo:nth-child(n+8) { animation-delay: 210ms; }
+
+  /* A bolinha só pulsa quando a captura está mesmo ligada. */
+  .ponto-vivo::after { animation: pulso-vivo var(--t-pulso) var(--curva) infinite; }
+  .ponto-vivo[data-estado='parado']::after { animation: none; }
+
+  /* O ouro brilha só quando o TOP 1 mudou — não é enfeite permanente. */
+  .medalha-1.destacar { animation: brilho-medalha 1800ms var(--curva) 2; }
+
+  /* Esqueleto: o brilho só existe enquanto o dado está a caminho. */
+  .esqueleto::after { animation: shimmer var(--t-shimmer) linear infinite; }
+
+  /* O JS interpola o valor em 600ms e põe .conta-numero para a entrada. */
+  .conta-numero { animation: conta-numero var(--t-numero) var(--curva) both; }
+
+  /* Chegou lead / caiu conexão: o cartão pisca UMA vez, com significado. */
+  .carta.avisou { animation: sobe-suave 260ms var(--curva) both; }
+}
+
+/* Quem pediu menos movimento não recebe transição nenhuma. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .esqueleto::after { display: none; }
+}
+
+/* -----------------------------------------------------------------------
+   7. RESPONSIVO
+   1180px → o trilho lateral vira barra inferior; cartões mais apertados.
+    720px → coluna única, tudo empilhado, alvo de toque preservado.
+   ----------------------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+  :root {
+    --carta-padding: 18px;
+    --grade-min: 240px;
+  }
+
+  .carta { border-radius: var(--r); }
+
+  /* Com o trilho embaixo, o conteúdo reserva a altura dele. */
+  body { padding-bottom: 0; }
+
+  .grade { gap: var(--esp-12); }
+
+  /* Números um degrau menores para caber duas colunas em tablet. */
+  .metrica-valor { font-size: var(--txt-numero-p); }
+  .metrica.compacta .metrica-valor { font-size: var(--txt-medio); }
+
+  /* Botão de texto encolhe o padding, nunca a altura. */
+  .btn { padding: 0 var(--esp-12); }
+
+  .vazio { min-height: 160px; padding: var(--esp-24) var(--esp-16); }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --carta-padding: 16px;
+    --r: 16px;
+    --grade-min: 100%;
+  }
+
+  body { font-size: var(--txt-base); }
+
+  /* Coluna única em qualquer grade. */
+  .grade { grid-template-columns: 1fr; gap: var(--esp-12); }
+
+  /* Cartão colado nas laterais fica sem cantos externos exagerados. */
+  .carta { padding: var(--carta-padding); }
+
+  /* Linha vira coluna quando os itens não cabem lado a lado. */
+  .pilha-h.quebra-celular {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pilha-h.quebra-celular > .btn,
+  .pilha-h.quebra-celular > .campo { width: 100%; }
+
+  /* Um botão por linha ocupa a largura toda — alvo de toque confortável. */
+  .btn.largo-celular { width: 100%; }
+
+  /* O separador vertical não faz sentido em coluna. */
+  .separador.vertical { display: none; }
+
+  /* Selos e medalhas seguem legíveis, só mais compactos. */
+  .selo { padding: 3px 9px; }
+  .medalha { width: 28px; height: 28px; }
+
+  /* Métrica: valor grande continua sendo o ponto de leitura da tela. */
+  .metrica-valor { font-size: var(--txt-numero-p); }
+
+  .vazio {
+    min-height: 150px;
+    padding: var(--esp-24) var(--esp-12);
+  }
+  .vazio-texto { max-width: 34ch; }
+
+  /* Aviso empilha o texto e a ação para não espremer o botão. */
+  .aviso { flex-wrap: wrap; }
+  .aviso .btn { margin-left: 0; width: 100%; }
+
+  /* Campo mantém 44px+ de área tocável mesmo com o rótulo dentro. */
+  .campo { min-height: 60px; padding: 8px var(--esp-12) 10px; }
+}
+
+/* Telas muito estreitas (≤360px): última linha de defesa contra estouro. */
+@media (max-width: 360px) {
+  :root { --carta-padding: 14px; }
+  .pilha-h { gap: var(--esp-8); }
+  .btn { font-size: var(--txt-legenda); }
+}
+
+/* Impressão: o painel vira documento claro e legível em papel. */
+@media print {
+  body { background: #FFF; color: #000; }
+  .carta { background: #FFF; border-color: #CCC; box-shadow: none; }
+  .btn, .btn-icone, .esqueleto { display: none !important; }
+  .metrica-valor, h1, h2, h3 { color: #000; }
+  .metrica-rotulo, .texto-2, .texto-3, .legenda { color: #444; }
+}

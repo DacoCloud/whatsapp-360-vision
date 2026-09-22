@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>WhatsApp 360° Vision</title>
+
+  <!-- Painel escuro em qualquer sistema: a barra do navegador acompanha o fundo. -->
+  <meta name="theme-color" content="#070A12">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Central de monitoramento do atendimento no WhatsApp da rede Apaixonados Por Quatro Patas.">
+  <!-- Uso interno do dono da rede: nada disto deve entrar em buscador. -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='16'%20fill='%23070A12'/%3E%3Cpath%20d='M32%2013a19%2019%200%201%200-16.4%2028.4L13%2051l9.9-2.4A19%2019%200%201%200%2032%2013z'%20fill='none'%20stroke='%238CC63F'%20stroke-width='4.5'%20stroke-linejoin='round'/%3E%3Ccircle%20cx='32'%20cy='31'%20r='5.5'%20fill='%235B5BD6'/%3E%3C/svg%3E">
+
+  <!-- O tema.css importa Sora, Manrope e Outfit do Google Fonts. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="app/tema.css">
+  <!-- A pele do mockup (foto, véu, vidro) por cima do tema e da casca. -->
+  <link rel="stylesheet" href="app/pele.css">
+
+  <!-- A casca importa o cliente da API logo na primeira linha. -->
+  <link rel="modulepreload" href="app/dados.js">
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="app/casca.js"></script>
+</body>
+</html>

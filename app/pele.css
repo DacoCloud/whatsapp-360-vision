@@ -1,0 +1,93 @@
+/* =============================================================================
+   Pele da plataforma — a mesma linguagem do mockup em todas as telas.
+
+   O Painel de Controle desenha a própria cena (foto, véu vermelho, vidro).
+   Esta folha leva o mesmo fundo e o mesmo vidro para as telas de trabalho
+   (WhatsApp, Análise, Leads, Preferências), onde a casca mostra trilho e
+   cabeçalho. Carrega DEPOIS do tema e vence a casca por especificidade —
+   `body:has(...)` + a raiz com atributo — sem tocar no código dela.
+   ============================================================================= */
+
+/* ---- fundo global: foto da recepção com o véu escuro-carmim ---- */
+body:has(.ca-raiz[data-modo="painel"]) { background: #12081C; }
+body:has(.ca-raiz[data-modo="painel"])::before {
+  content: "";
+  position: fixed; inset: 0; z-index: -2;
+  background: #1B0D2A url("img/recepcao-larga.webp") center 30% / cover no-repeat;
+  filter: saturate(.8);
+}
+body:has(.ca-raiz[data-modo="painel"])::after {
+  content: "";
+  position: fixed; inset: 0; z-index: -1;
+  /* mais fechado que no painel: aqui a tela é de leitura densa */
+  background:
+    linear-gradient(180deg, rgba(14,8,28,.72) 0%, rgba(14,8,28,.80) 40%, rgba(40,6,20,.86) 100%),
+    linear-gradient(100deg, rgba(20,10,40,.92) 0%, rgba(44,10,44,.84) 45%, rgba(110,16,34,.80) 100%);
+}
+
+/* ---- trilho e cabeçalho em vidro ---- */
+body:has(.ca-raiz[data-modo="painel"]) .ca-raiz[data-modo="painel"] .ca-trilho {
+  background: rgba(12, 10, 28, .58);
+  border-right-color: rgba(255, 255, 255, .10);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+body:has(.ca-raiz[data-modo="painel"]) .ca-raiz[data-modo="painel"] .ca-cabecalho {
+  background: rgba(12, 10, 28, .50);
+  border-bottom-color: rgba(255, 255, 255, .10);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+/* a marca no trilho e no cabeçalho é o cachorrinho da rede, não o emblema "360" */
+body:has(.ca-raiz[data-modo="painel"]) .ca-emblema {
+  background: url("img/cachorro-160.png") center / cover no-repeat;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .35);
+  border-radius: 50%;
+  color: transparent;
+  font-size: 0;
+  width: 42px; height: 42px;
+}
+body:has(.ca-raiz[data-modo="painel"]) .ca-emblema > * { display: none; }
+
+/* item ativo do trilho: o mesmo indigo dos botões do painel */
+body:has(.ca-raiz[data-modo="painel"]) .ca-item[aria-current="page"] {
+  background: rgba(91, 91, 214, .22);
+  color: #fff;
+}
+body:has(.ca-raiz[data-modo="painel"]) .ca-item:hover {
+  background: rgba(255, 255, 255, .08);
+}
+
+/* ---- cartões das telas de trabalho: vidro escuro, não chapa sólida ---- */
+body:has(.ca-raiz[data-modo="painel"]) .ca-conteudo .carta,
+body:has(.ca-raiz[data-modo="painel"]) .ca-conteudo .carta-alta {
+  background: rgba(13, 18, 36, .82);
+  border-color: rgba(255, 255, 255, .10);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* título das telas de trabalho ganha a mesma primeira palavra em ouro que o painel */
+body:has(.ca-raiz[data-modo="painel"]) .ca-conteudo h1 .ouro,
+body:has(.ca-raiz[data-modo="painel"]) .ca-conteudo h2 .ouro { color: #FFC93C; }
+
+/* rolagem fina no indigo do mockup, em toda a plataforma */
+body:has(.ca-raiz[data-modo="painel"]) * { scrollbar-color: #6B6BE6 rgba(255,255,255,.10); }
+body:has(.ca-raiz[data-modo="painel"]) ::-webkit-scrollbar { width: 12px; height: 12px; }
+body:has(.ca-raiz[data-modo="painel"]) ::-webkit-scrollbar-track { background: rgba(255,255,255,.08); border-radius: 999px; }
+body:has(.ca-raiz[data-modo="painel"]) ::-webkit-scrollbar-thumb { background: #6B6BE6; border-radius: 999px; }
+
+/* celular: o trilho vira barra inferior em vidro */
+@media (max-width: 1180px) {
+  body:has(.ca-raiz[data-modo="painel"]) .ca-raiz[data-modo="painel"] .ca-trilho {
+    background: rgba(12, 10, 28, .78);
+    border-top: 1px solid rgba(255, 255, 255, .10);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:has(.ca-raiz[data-modo="painel"]) .ca-trilho,
+  body:has(.ca-raiz[data-modo="painel"]) .ca-cabecalho,
+  body:has(.ca-raiz[data-modo="painel"]) .ca-conteudo .carta { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
