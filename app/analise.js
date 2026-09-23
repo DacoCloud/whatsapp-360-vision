@@ -73,6 +73,7 @@ import {
   ou,
   TRACINHO,
 } from './dados.js';
+import { marca as identidade } from './marca.js';
 
 /* ═════════════════════════ 1. METODOLOGIA E CONSTANTES ═══════════════════
    Tudo nesta seção vem da seção 5 do CONTRATO.md, que por sua vez vem dos
@@ -335,10 +336,10 @@ const CASOS_POR_LOTE = 8;
  */
 const LADOS_CONHECIDOS = ['tutor', 'contato', 'cliente', 'clinica', 'recepcao', 'unidade', 'atendente', 'ia'];
 
-/** Unidades da rede com agente de IA. Usado só se a API não marcar `tem_agente_ia`.
-    Só unidades Apaixonados: este painel é do dono da rede, e nenhuma outra clínica
-    da carteira pode aparecer aqui, nem em lista de código. */
-const MARCAS_DE_IA = ['botafogo', 'catete'];
+/** Unidades com agente de IA. Usado SÓ se a API não marcar `tem_agente_ia` —
+    a fonte de verdade é o servidor. Vem da identidade desta instalação para
+    que nenhum nome de cliente fique preso no código compartilhado. */
+const MARCAS_DE_IA = identidade.marcasDeIa;
 
 /** Motivos que o servidor pode dar para não haver análise, com o que fazer. */
 const MOTIVOS = {

@@ -30,6 +30,7 @@ import {
   formatarQuando,
   TRACINHO,
 } from './dados.js';
+import { marca as identidade } from './marca.js';
 
 /* Os módulos de tela. Import estático: cada um exporta `export const tela`.
    Se algum export vier fora do contrato, `normalizarTela()` abaixo põe no
@@ -65,8 +66,8 @@ const DEFINICOES = [
 const ROTA_PADRAO = 'visao-geral';
 
 /** Nome da aplicação no <title> e na marca do trilho. */
-const NOME_APP = 'WhatsApp 360° Vision';
-const NOME_REDE = 'Apaixonados Por Quatro Patas';
+const NOME_APP = identidade.app;
+const NOME_REDE = identidade.dono;
 
 /** De quanto em quanto tempo a casca reconsulta a rede (seletor + relógio). */
 const INTERVALO_REDE_MS = 60000;
@@ -1371,7 +1372,7 @@ function montarTrilho() {
   emblema.setAttribute('aria-hidden', 'true');
   marca.appendChild(emblema);
   const textoMarca = criar('span', 'ca-marca-texto');
-  textoMarca.appendChild(criar('span', 'ca-marca-nome marca', 'WhatsApp 360°'));
+  textoMarca.appendChild(criar('span', 'ca-marca-nome marca', identidade.appCurto));
   textoMarca.appendChild(criar('span', 'ca-marca-sub', NOME_REDE));
   marca.appendChild(textoMarca);
   caixa.appendChild(marca);
@@ -1401,7 +1402,7 @@ function montarTrilho() {
   const bolinha = criar('i');
   bolinha.setAttribute('aria-hidden', 'true');
   assinatura.appendChild(bolinha);
-  assinatura.appendChild(criar('span', null, 'Software Daco Vet'));
+  assinatura.appendChild(criar('span', null, identidade.assinaturaCurta));
   assinatura.title = 'Plataforma desenvolvida pela Daco Vet';
   rodape.appendChild(assinatura);
 
@@ -1453,7 +1454,7 @@ function montarCabecalho() {
   const emblema = criar('span', 'ca-emblema marca', '360');
   emblema.setAttribute('aria-hidden', 'true');
   marca.appendChild(emblema);
-  marca.appendChild(criar('span', 'ca-marca-nome marca', 'WhatsApp 360°'));
+  marca.appendChild(criar('span', 'ca-marca-nome marca', identidade.appCurto));
   caixa.appendChild(marca);
 
   caixa.appendChild(montarSeletor());
